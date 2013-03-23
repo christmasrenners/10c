@@ -14,6 +14,8 @@ function love.keypressed(key, unicode)
    if (key == 'q' and love.keyboard.isDown("lshift")==true ) then
       love.event.quit( )
    end
+   -- covet mechanic
+   if key == ' ' then covet_bool=1 else covet_bool=0 end
 end
 
 --- not used atm

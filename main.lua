@@ -1,7 +1,9 @@
 
 local _ROOT = (...):match("(.-)[^%.]+$")
 repl = require("love-repl") 
-util = requre("utility")
+
+-- utility file has deep copy
+util = require("utility")
 
 -- global initialisation variables
 require("initialise")
@@ -65,6 +67,9 @@ function love.draw()
 
    -- set up the targeting
    draw_player()
+
+   -- covet that ass
+   covet() 
 
    -- console
    if repl.toggled() then repl.draw() return end

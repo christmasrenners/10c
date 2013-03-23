@@ -47,6 +47,8 @@ function InitWorld()
    worldSize = {x=800,y=600}
    tileSize = 20
 
+   font = love.graphics.newFont(50) -- the number denotes the font size
+
    -- set the boundary conditions , choices are bounded or periodic
    bc = bounded
    if (bc ~= bounded) or (bc ~= periodic) then bc = bounded end
