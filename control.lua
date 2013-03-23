@@ -24,6 +24,18 @@ function love.mousepressed(x, y, button)
    end
 end
 
+function moveObject(current, move)
+
+   local target = {x=bc(current.x+move.x, worldSize.x), y=bc(current.y+move.y, worldSize.y)}
+   local index = { x= math.floor( target.x/tileSize) +1, y= math.floor(target.y/tileSize) +1}
+
+   if (tileInfo[index.x][index.y].collision == true) then
+      return current.x,current.y
+   end
+
+   return target.x,target.y
+end
+
 --- boundary conditions periodic
 function periodic( new , compare )
    if new < 0 then return compare end
