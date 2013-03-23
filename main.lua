@@ -1,6 +1,7 @@
 
 local _ROOT = (...):match("(.-)[^%.]+$")
 repl = require("love-repl") 
+util = requre("utility")
 
 -- global initialisation variables
 require("initialise")
