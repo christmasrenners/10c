@@ -13,6 +13,62 @@ function InitCharacter()
 	mouseLoc = {x=0,y=0}
 end
 
+function InitWorld()
+
+	worldSize = {x=800,y=600}
+
+	tileSize = 20
+
+	tileNumber = {x=worldSize.x/tileSize, y=worldSize.y/tileSize}
+
+
+	terrainMap = {"land","scrub"}
+
+	terrainValues = {}
+	terrainValues.land = {}
+	terrainValues.land.name = "land"
+	terrainValues["land"].colour = {r=155,g=155,b=0,a=255}
+	terrainValues.land.collision = false
+
+	terrainValues.scrub = {}
+	terrainValues.scrub.name = "scrub"
+	terrainValues["scrub"].colour = {r=55,g=55,b=0,a=255}
+	terrainValues.scrub.collision = false
+
+	terrainValues.road = {}
+	terrainValues.road.name = "road"
+	terrainValues["road"].colour = {r=155,g=155,b=155,a=255}
+	terrainValues.road.collision = false
+
+	tileInfo = {}
+	for i=1,tileNumber.x,1 do 
+		tileInfo[i] = {}
+		for j=1,tileNumber.y,1 do
+			tileInfo[i][j] = terrainValues[terrainMap[math.random(#terrainMap)]]
+		end
+	end
+
+
+	local roadLength = 100
+
+	local roadPos = {x = math.random(tileNumber.x),y = math.random(tileNumber.y)}
+	for i=1,roadLength,1 do
+
+		if tileInfo[roadPos.x][roadPos.y] == terrainValues.road then roadLength = roadLength - 1 end
+
+		tileInfo[roadPos.x][roadPos.y] = terrainValues.road
+
+		if (math.random(2) == 1) then
+			roadPos.x = roadPos.x + math.random(3) - 2
+		else
+			roadPos.y = roadPos.y + math.random(3) - 2
+		end
+
+	end
+
+
+end
+
 --- LOVE Functions  -------------------------------------------------------------------------
 
 function love.load()
@@ -26,6 +82,7 @@ function love.load()
 
 
 	 InitCharacter()
+	 InitWorld()
 
 end
 
@@ -83,6 +140,17 @@ function love.update()
 end
 
 function love.draw()
+
+	for i=1,tileNumber.x,1 do 
+		for j=1,tileNumber.y,1 do
+			love.graphics.setColor(tileInfo[i][j].colour.r,tileInfo[i][j].colour.g,tileInfo[i][j].colour.b,255)
+
+			local loc = {(i-1)*tileSize, (j-1)*tileSize}
+
+			love.graphics.quad("fill",loc[1],loc[2],loc[1]+tileSize, loc[2],loc[1]+tileSize,loc[2]+tileSize,loc[1],loc[2]+tileSize)
+		end
+	end
+
 
 	love.graphics.setColor(255,0,0,255)
 	love.graphics.circle( "fill", characterLoc.x, characterLoc.y, 5, 10 )
