@@ -8,6 +8,8 @@ function draw_player()
    love.graphics.setColor(255,255,255,255)
    love.graphics.print(characterLoc.x.."  "..characterLoc.y,100,100)
 
+   love.graphics.drawq(characterImage,characterQuad,characterLoc.x-16,characterLoc.y-20)
+
    -- draw a crosshair on the mouse pointer of +/- 2 on the mouse pointer
    local x,y = love.mouse.getPosition()
    local chx,chy = characterLoc.x,characterLoc.y
