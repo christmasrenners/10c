@@ -1,4 +1,3 @@
-
 function InitCharacter()
    screenSize = {x=800,y=600}
    screenLoc = {x=0,y=0}
@@ -8,6 +7,7 @@ end
 
 -- obs initialise the houses
 function InitHouses()
+   -- initialise the houses
    local nHouses = 8
    for i=1,nHouses,1 do
       local testX = math.random(tileNumber.x)
@@ -34,6 +34,11 @@ function InitRoads()
    end
 end
 
+-- initialise the land, at the moment we have land and scrub
+function InitLand()
+end
+
+-- initialise the world with all its lovely global variables
 function InitWorld()
 
    worldSize = {x=800,y=600}
@@ -46,7 +51,6 @@ function InitWorld()
    tileNumber = {x=worldSize.x/tileSize, y=worldSize.y/tileSize}
 
    local terrainMap = {"land","scrub"}
-
    terrainValues = {}
    terrainValues.land = {}
    terrainValues.land.name = "land"
@@ -58,15 +62,16 @@ function InitWorld()
    terrainValues["scrub"].colour = {r=55,g=55,b=0,a=255}
    terrainValues.scrub.collision = false
 
-   terrainValues.road = {}
-   terrainValues.road.name = "road"
-   terrainValues["road"].colour = {r=155,g=155,b=155,a=255}
-   terrainValues.road.collision = false
-
+   -- house type
    terrainValues.house = {}
    terrainValues.house.name = "house"
    terrainValues["house"].colour = {r=0,g=255,b=0,a=255}
    terrainValues.house.collision = true
+
+   terrainValues.road = {}
+   terrainValues.road.name = "road"
+   terrainValues["road"].colour = {r=155,g=155,b=155,a=255}
+   terrainValues.road.collision = false
 
    tileInfo = {}
    for i=1,tileNumber.x,1 do 
