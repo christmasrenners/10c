@@ -42,6 +42,11 @@ function InitWorld()
    terrainValues["road"].colour = {r=155,g=155,b=155,a=255}
    terrainValues.road.collision = false
 
+   terrainValues.house = {}
+   terrainValues.house.name = "house"
+   terrainValues["house"].colour = {r=0,g=255,b=0,a=255}
+   terrainValues.house.collision = true
+
    tileInfo = {}
    for i=1,tileNumber.x,1 do 
       tileInfo[i] = {}
@@ -51,20 +56,35 @@ function InitWorld()
    end
 
 
-   local roadLength = 100
 
-   local roadPos = {x = math.random(tileNumber.x),y = math.random(tileNumber.y)}
-   for i=1,roadLength,1 do
 
-      if tileInfo[roadPos.x][roadPos.y] == terrainValues.road then roadLength = roadLength - 1 end
+   for i=1,3,1 do
 
-      tileInfo[roadPos.x][roadPos.y] = terrainValues.road
+   	   local roadPosX =  math.random(tileNumber.x)
 
-      if (math.random(2) == 1) then
-	 roadPos.x = roadPos.x + math.random(3) - 2
-      else
-	 roadPos.y = roadPos.y + math.random(3) - 2
-      end
+   	   for j=1,tileNumber.y,1 do
+   	   		tileInfo[roadPosX][j] = terrainValues.road
+   	   end
+   end
+
+    for i=1,3,1 do
+
+   	   local roadPosY =  math.random(tileNumber.y)
+
+   	   for j=1,tileNumber.x,1 do
+   	   		tileInfo[j][roadPosY] = terrainValues.road
+   	   end
+   end
+
+
+   local nHouses = 8
+
+   for i=1,nHouses,1 do
+   	local testX = math.random(tileNumber.x)
+   	local testY = math.random(tileNumber.y)
+
+   	-- check for adjacent road
+   	tileInfo[testX][testY] = terrainValues.house
 
    end
 
