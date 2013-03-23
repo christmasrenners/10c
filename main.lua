@@ -1,7 +1,7 @@
 
 local _ROOT = (...):match("(.-)[^%.]+$")
 repl = require("love-repl") 
-util = requre("utility")
+util = require("utility")
 
 -- global initialisation variables
 require("initialise")
@@ -27,6 +27,7 @@ function love.load()
 
    -- wrapped into initialise.lua
    Initialise()
+
 end
 
 function love.update()

@@ -7,6 +7,10 @@ function InitCharacter()
 
    characterImage = love.graphics.newImage("character.png")
    characterQuad  = love.graphics.newQuad(0,0,32,48,32,48)
+
+   characterBody = love.physics.newBody(world,characterLoc.x,characterLoc.y)
+   characterShape = love.physics.newCircleShape( 5 )
+   characterFixture = love.physics.newFixture( characterBody, characterShape )
 end
 
 -- obs initialise the houses
@@ -15,9 +19,21 @@ function InitHouses()
    for i=1,nHouses,1 do
       local testX = math.random(tileNumber.x)
       local testY = math.random(tileNumber.y)
-      -- check for adjacent road
-      tileInfo[testX][testY] = terrainValues.house
+
+      tileInfo[testX][testY] = deepcopy(terrainValues.house)
+
+      -- box2d
+      tileInfo[testX][testY].body  = love.physics.newBody(world, testX*tileSize + tileSize/2, testY*tileSize + tileSize/2) 
+      tileInfo[testX][testY].shape = love.physics.newRectangleShape( tileSize, tileSize )
+      tileInfo[testX][testY].fixture = love.physics.newFixture( tileInfo[testX][testY].body, tileInfo[testX][testY].shape )
+
    end
+end
+
+function InitIndoors()
+
+
+
 end
 
 -- obvs initialise the roads
@@ -26,18 +42,18 @@ function InitRoads()
    for i=1,nRoads,1 do
       local roadPosX =  math.random(tileNumber.x)
       for j=1,tileNumber.y,1 do
-	 tileInfo[roadPosX][j] = terrainValues.road
+	 tileInfo[roadPosX][j] = deepcopy(terrainValues.road)
       end
    end
    for i=1,nRoads,1 do
       local roadPosY =  math.random(tileNumber.y)
       for j=1,tileNumber.x,1 do
-	 tileInfo[j][roadPosY] = terrainValues.road
+	 tileInfo[j][roadPosY] = deepcopy(terrainValues.road)
       end
    end
 end
 
-function InitWorld()
+function InitWorldTiles()
 
    worldSize = {x=800,y=600}
    tileSize = 20
@@ -75,16 +91,26 @@ function InitWorld()
    for i=1,tileNumber.x,1 do 
       tileInfo[i] = {}
       for j=1,tileNumber.y,1 do
-	 tileInfo[i][j] = terrainValues[terrainMap[math.random(#terrainMap)]]
+	 tileInfo[i][j] = deepcopy(terrainValues[terrainMap[math.random(#terrainMap)]])
       end
    end
 
 end
 
+
+function InitIndoors()
+
+end
+
+
 -- initialisation wrapper
 function Initialise()
+
+   -- init physics world
+   world = love.physics.newWorld( 0, 0 )
+
    InitCharacter()
-   InitWorld()
+   InitWorldTiles()
    InitRoads()
    InitHouses()
 end
