@@ -36,6 +36,9 @@ function love.update()
 
    local dt = 100*love.timer.getDelta()
 
+   -- Update physics
+   world:update( dt )
+
    local moveVal = {x=0,y=0}
    --- periodic boundary conditions
    if love.keyboard.isDown("w") then moveVal.y = moveVal.y-dt end
@@ -45,6 +48,9 @@ function love.update()
 
    local tx,ty = moveObject(characterLoc,moveVal)
    characterLoc = {x=tx, y=ty}
+
+   characterBody:setX(characterLoc.x)
+   characterBody:setY(characterLoc.y)
 
 end
 
