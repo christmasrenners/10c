@@ -1,4 +1,21 @@
---wrappers for the character drawing and animation of npcs
+function throw()
+   -- launch something directed at the crosshairs
+   local x,y = love.mouse.getPosition()
+end
+
+function hit()
+end
+
+function pick_up()
+   
+end
+
+-- the all important covet mechanic
+function covet()
+   
+end
+
+-- wrappers for the character drawing and animation of npcs
 -- get the mouse position and draw a line to it
 function draw_player()
    -- draw the person

@@ -21,6 +21,9 @@ function love.load()
    -- remove the cursor
    love.mouse.setVisible(false)
 
+   -- draw the world
+   world = love.physics.newWorld( 0 , 0 , true )
+
    -- Init debug console
    repl.initialize()
 
