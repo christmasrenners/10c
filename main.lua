@@ -32,6 +32,7 @@ function love.load()
 
    -- wrapped into initialise.lua
    Initialise()
+
 end
 
 function love.update()
@@ -39,6 +40,9 @@ function love.update()
    if repl.toggled() then return end
 
    local dt = 100*love.timer.getDelta()
+
+   -- Update physics
+   world:update( dt )
 
    local moveVal = {x=0,y=0}
    --- periodic boundary conditions
@@ -49,6 +53,9 @@ function love.update()
 
    local tx,ty = moveObject(characterLoc,moveVal)
    characterLoc = {x=tx, y=ty}
+
+   characterBody:setX(characterLoc.x)
+   characterBody:setY(characterLoc.y)
 
 end
 
