@@ -3,6 +3,9 @@ function InitCharacter()
    screenLoc = {x=0,y=0}
    characterLoc = {x=screenSize.x/2,y=screenSize.y/2}
    mouseLoc = {x=0,y=0}
+
+   characterImage = love.graphics.newImage("character.png")
+   characterQuad  = love.graphics.newQuad(0,0,32,48,32,48)
 end
 
 -- obs initialise the houses
