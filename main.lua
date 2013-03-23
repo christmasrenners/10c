@@ -24,7 +24,6 @@ function InitWorld()
 
    tileNumber = {x=worldSize.x/tileSize, y=worldSize.y/tileSize}
 
-
    terrainMap = {"land","scrub"}
 
    terrainValues = {}
@@ -79,6 +78,9 @@ function love.load()
    love.graphics.setCaption("10c")
 
    math.randomseed( os.time() )
+
+   -- remove the cursor
+   love.mouse.setVisible(false)
 
    -- Init debug console
    repl.initialize()
@@ -151,6 +153,26 @@ function love.update()
 
 end
 
+-- get the mouse position and draw a line to it
+function draw_player()
+   -- draw the person
+   love.graphics.setColor(255,0,0,255)
+   love.graphics.circle( "fill", characterLoc.x, characterLoc.y, 5, 10 )
+
+   love.graphics.setColor(255,255,255,255)
+   love.graphics.print(characterLoc.x.."  "..characterLoc.y,100,100)
+
+   -- draw a crosshair on the mouse pointer of +/- 2 on the mouse pointer
+   local x,y = love.mouse.getPosition()
+   local chx,chy = characterLoc.x,characterLoc.y
+
+   love.graphics.setColor(255,255,255,255)
+
+   love.graphics.line(x-4,y,x+4,y)
+   love.graphics.line(x,y-4,x,y+4)
+end
+
+-- drawing
 function love.draw()
 
    for i=1,tileNumber.x,1 do 
@@ -163,17 +185,10 @@ function love.draw()
       end
    end
 
-
-   love.graphics.setColor(255,0,0,255)
-   love.graphics.circle( "fill", characterLoc.x, characterLoc.y, 5, 10 )
-
-   love.graphics.setColor(255,255,255,255)
-   love.graphics.print(characterLoc.x.."  "..characterLoc.y,100,100)
+   -- set up the targeting
+   draw_player()
 
    -- console
-   if repl.toggled() then
-      repl.draw()
-      return
-   end
+   if repl.toggled() then repl.draw() return end
 end
 
