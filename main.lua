@@ -3,6 +3,16 @@ local _ROOT = (...):match("(.-)[^%.]+$")
 local repl = require("love-repl") 
 
 
+-- Init
+
+function InitCharacter()
+
+	screenSize = {x=800,y=600}
+	screenLoc = {x=0,y=0}
+	characterLoc = {x=screenSize.x/2,y=screenSize.y/2}
+	mouseLoc = {x=0,y=0}
+end
+
 --- LOVE Functions  -------------------------------------------------------------------------
 
 function love.load()
@@ -14,10 +24,19 @@ function love.load()
 	-- Init debug console
 	 repl.initialize()
 
+
+	 InitCharacter()
+
 end
 
 
 function love.keypressed(key, unicode)
+
+	if (key == "w") then characterLoc.y = characterLoc.y + 1 return end
+	if (key == "a") then characterLoc.x = characterLoc.x - 1 return end
+	if (key == "s") then characterLoc.y = characterLoc.y - 1 return end
+	if (key == "d") then characterLoc.x = characterLoc.x + 1 return end
+
 
 	-- DEBUG CONSOLE ---------------------------------------------------
 	if key == 'tab' then
@@ -53,9 +72,24 @@ function love.update()
   if repl.toggled() then
     return
   end
+
+  local dt = 100*love.timer.getDelta()
+
+	if love.keyboard.isDown("w") then characterLoc.y = characterLoc.y - dt  end
+	if love.keyboard.isDown("a") then characterLoc.x = characterLoc.x - dt  end
+	if love.keyboard.isDown("s") then characterLoc.y = characterLoc.y + dt  end
+	if love.keyboard.isDown("d") then characterLoc.x = characterLoc.x + dt  end
+
 end
 
 function love.draw()
+
+	love.graphics.setColor(255,0,0,255)
+	love.graphics.circle( "fill", characterLoc.x, characterLoc.y, 5, 10 )
+
+	love.graphics.setColor(255,255,255,255)
+	love.graphics.print(characterLoc.x.."  "..characterLoc.y,100,100)
+
 -- console
 	if repl.toggled() then
 	    repl.draw()
