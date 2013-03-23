@@ -34,11 +34,15 @@ function love.update()
 
    local dt = 100*love.timer.getDelta()
 
+   local moveVal = {x=0,y=0}
    --- periodic boundary conditions
-   if love.keyboard.isDown("w") then characterLoc.y = bc(characterLoc.y-dt,screenSize.y) end
-   if love.keyboard.isDown("a") then characterLoc.x = bc(characterLoc.x-dt,screenSize.x) end
-   if love.keyboard.isDown("s") then characterLoc.y = bc(characterLoc.y+dt,screenSize.y) end
-   if love.keyboard.isDown("d") then characterLoc.x = bc(characterLoc.x+dt,screenSize.x) end
+   if love.keyboard.isDown("w") then moveVal.y = moveVal.y-dt end
+   if love.keyboard.isDown("a") then moveVal.x = moveVal.x-dt end
+   if love.keyboard.isDown("s") then moveVal.y = moveVal.y+dt end
+   if love.keyboard.isDown("d") then moveVal.x = moveVal.x+dt end
+
+   local tx,ty = moveObject(characterLoc,moveVal)
+   characterLoc = {x=tx, y=ty}
 
 end
 
