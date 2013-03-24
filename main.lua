@@ -72,6 +72,21 @@ function love.draw()
       end
    end
 
+   -- draw all of the objects
+   for i=1,nobjects,1 do
+   -- linearly damp the thrown velocities
+      vx[i] = vx[i] * 0.97
+      vy[i] = vy[i] * 0.97
+      throwbody[i]:setLinearVelocity(vx[i],vy[i])
+      -- update the position, seems like each call to this altered the vel?
+      local thx,thy = throwbody[i]:getPosition()
+      -- if we are holding it we cannot plot it
+      love.graphics.setColor(0,0,255,255)
+      if holding_object ~=i then
+	 love.graphics.circle( "fill", thx, thy, 2, 10 )
+      end
+   end
+
    -- set up the targeting
    draw_player()
 
