@@ -1,14 +1,58 @@
-function throw()
+-- based on where the mouse points
+function set_velocity(chx,chy)
    -- launch something directed at the crosshairs
-   local x,y = love.mouse.getPosition()
+   local mousex,mousey = love.mouse.getPosition()
+   local velx = ( mousex - chx )
+   local vely = ( mousey - chy )
+   local norm = 2.0 / ( math.sqrt( velx*velx + vely*vely ))
+   return velx*norm,vely*norm
+end
+
+-- throw some shit
+function throw()
+   -- if we aren't holding anything we can't throw it !!
+   if holding_object ~= false then
+      local chx,chy = characterLoc.x,characterLoc.y
+      throwbody[holding_object]:setPosition(chx,chy)
+      -- I had to make the velocities global so that it wouldn't fuck up
+      vx[holding_object],vy[holding_object] = set_velocity(chx,chy)
+      throwbody[holding_object]:setLinearVelocity(vx[holding_object],vy[holding_object])
+      local throwshape = love.physics.newCircleShape(2)
+      throwfixture = love.physics.newFixture( throwbody[holding_object] , throwshape )
+      holding_object = false
+   end
    return
 end
 
+-- hit mechanic, will have to think about it
 function hit()
    return
 end
 
+-- are we close to some object, if we are we pick up the one closest to us
+function close_to_object()
+   -- at the moment use the throwbody
+   local dist = characterLoc.x + characterLoc.y
+   local min_idx = false
+   -- loop objects
+   for i=1,nobjects,1 do
+      local thx,thy = throwbody[i]:getPosition()
+      local distfromobj = dist - ( thx + thy )
+      distfromobj = math.sqrt( distfromobj * distfromobj )
+      -- if we are close to an object return its index
+      if distfromobj < 20 then min_idx = i end
+   end
+   return min_idx
+end
+
+-- sweet motherfucking pick up shit
 function pick_up()
+   -- have a distance to object fucking thing
+   local close_idx = close_to_object()
+   if close_idx ~= false and holding_object == false then
+      --print("picked up this motherfucker ... ")
+      holding_object = close_idx
+   end
    return
 end
 
@@ -36,7 +80,7 @@ function draw_player()
    love.graphics.setColor(255,255,255,255)
    --love.graphics.print(characterLoc.x.."  "..characterLoc.y,100,100)
 
-   --love.graphics.drawq(characterImage,characterQuad,characterLoc.x-16,characterLoc.y-32)
+   love.graphics.drawq(characterImage,characterQuad,characterLoc.x-16,characterLoc.y-32)
 
    -- draw a crosshair on the mouse pointer of +/- 2 on the mouse pointer
    local x,y = love.mouse.getPosition()

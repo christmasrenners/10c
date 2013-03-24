@@ -24,15 +24,24 @@ function love.mousepressed(x, y, button)
       repl.mousepressed(x, y, button)
       return
    end
+   -- hit and throw
+   if button=='l' then 
+      return throw() 
+   elseif button =='r' then 
+      return pick_up()
+   end
 end
 
+-- conditional move whereby we return the current position if we hit something
 function moveObject(current, move)
 
-   local target = {x=bc(current.x+move.x, worldSize.x), y=bc(current.y+move.y, worldSize.y)}
-   local index = { x= math.floor( target.x/tileSize) +1, y= math.floor(target.y/tileSize) +1}
+   local target = { x=bc(current.x+move.x, worldSize.x), y=bc(current.y+move.y, worldSize.y) }
+   local index = { x=math.floor( target.x/tileSize)+1 , y=math.floor(target.y/tileSize)+1 }
 
-   if (tileInfo[index.x][index.y].collision == true) then
-      return current.x,current.y
+   if index.x < tileSize and index.y < tileSize then
+      if (tileInfo[index.x][index.y].collision == true) then
+	 return current.x,current.y
+      end
    end
 
    return target.x,target.y

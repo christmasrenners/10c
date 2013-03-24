@@ -12,6 +12,22 @@ function InitCharacter()
    characterFixture = love.physics.newFixture( characterBody, characterShape )
 end
 
+function InitObjects()
+   -- nbodies, randomly generated
+   nobjects = 8
+   -- start with one
+   holding_object=false
+   -- initialise the object names
+   throwbody = {}
+   vx = {}
+   vy = {}
+   for i=1,nobjects,1 do
+      vx[i] = 0
+      vy[i] = 0
+      throwbody[i] = love.physics.newBody( world , math.random(worldSize.x) , math.random(worldSize.y) , "dynamic" )
+   end
+end
+
 -- obs initialise the houses
 function InitHouses()
    -- initialise the houses
@@ -56,7 +72,7 @@ function InitWorldTiles()
 
    -- set the boundary conditions , choices are bounded or periodic
    bc = bounded
-   if (bc ~= bounded) or (bc ~= periodic) then bc = bounded end
+   if (bc ~= bounded) or (bc ~= periodic) then bc = periodic end
 
    tileNumber = {x=worldSize.x/tileSize, y=worldSize.y/tileSize}
 
@@ -93,7 +109,7 @@ function InitWorldTiles()
 
 end
 
-
+-- indoor generation
 function InitIndoors()
 
 end
@@ -109,4 +125,5 @@ function Initialise()
    InitWorldTiles()
    InitRoads()
    InitHouses()
+   InitObjects()
 end
