@@ -36,9 +36,9 @@ end
 function moveObject(current, move)
 
    local target = { x=bc(current.x+move.x, worldSize.x), y=bc(current.y+move.y, worldSize.y) }
-   local index = { x=math.floor( target.x/tileSize)+1 , y=math.floor(target.y/tileSize)+1 }
+   local index = { x=math.floor( target.x/tileSize), y=math.floor(target.y/tileSize) }
 
-   if index.x < tileSize and index.y < tileSize then
+   if index.x < worldSize.x and index.y < worldSize.y then
       if (tileInfo[index.x][index.y].collision == true) then
 	 return current.x,current.y
       end

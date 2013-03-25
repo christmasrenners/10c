@@ -1,3 +1,5 @@
+require("items")
+
 function InitCharacter()
    screenSize = {x=800,y=600}
    screenLoc = {x=0,y=0}
@@ -13,18 +15,19 @@ function InitCharacter()
 end
 
 function InitObjects()
+
+   -- initialise prototypes
+   InitItemDB()
+
    -- nbodies, randomly generated
    nobjects = 8
    -- start with one
    holding_object=false
+
    -- initialise the object names
    throwbody = {}
-   vx = {}
-   vy = {}
    for i=1,nobjects,1 do
-      vx[i] = 0
-      vy[i] = 0
-      throwbody[i] = love.physics.newBody( world , math.random(worldSize.x) , math.random(worldSize.y) , "dynamic" )
+      throwbody[i] = SpawnItem()
    end
 end
 
@@ -50,14 +53,14 @@ end
 function InitRoads()
    local nRoads = 3
    for i=1,nRoads,1 do
-      local roadPosX =  math.random(tileNumber.x)
-      for j=1,tileNumber.y,1 do
+      local roadPosX =  math.random(tileNumber.x + 1) -1
+      for j=0,tileNumber.y,1 do
 	 tileInfo[roadPosX][j] = deepcopy(terrainValues.road)
       end
    end
    for i=1,nRoads,1 do
-      local roadPosY =  math.random(tileNumber.y)
-      for j=1,tileNumber.x,1 do
+      local roadPosY =  math.random(tileNumber.y + 1) -1
+      for j=0,tileNumber.x,1 do
 	 tileInfo[j][roadPosY] = deepcopy(terrainValues.road)
       end
    end
@@ -100,9 +103,9 @@ function InitWorldTiles()
    terrainValues.road.collision = false
 
    tileInfo = {}
-   for i=1,tileNumber.x,1 do 
+   for i=0,tileNumber.x,1 do 
       tileInfo[i] = {}
-      for j=1,tileNumber.y,1 do
+      for j=0,tileNumber.y,1 do
 	 tileInfo[i][j] = deepcopy(terrainValues[terrainMap[math.random(#terrainMap)]])
       end
    end

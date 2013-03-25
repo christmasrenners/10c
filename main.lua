@@ -14,6 +14,9 @@ require("control")
 -- animation of the character and npc's
 require("animate")
 
+-- item management
+require("items")
+
 --- LOVE Functions  -------------------------------------------------------------------------
 
 function love.load()
@@ -62,11 +65,11 @@ end
 -- drawing
 function love.draw()
 
-   for i=1,tileNumber.x,1 do 
-      for j=1,tileNumber.y,1 do
+   for i=0,tileNumber.x,1 do 
+      for j=0,tileNumber.y,1 do
 	 love.graphics.setColor(tileInfo[i][j].colour.r,tileInfo[i][j].colour.g,tileInfo[i][j].colour.b,255)
 
-	 local loc = {(i-1)*tileSize, (j-1)*tileSize}
+	 local loc = {i*tileSize, j*tileSize}
 
 	 love.graphics.quad("fill",loc[1],loc[2],loc[1]+tileSize, loc[2],loc[1]+tileSize,loc[2]+tileSize,loc[1],loc[2]+tileSize)
       end
@@ -75,15 +78,15 @@ function love.draw()
    -- draw all of the objects
    for i=1,nobjects,1 do
    -- linearly damp the thrown velocities
-      vx[i] = vx[i] * 0.97
-      vy[i] = vy[i] * 0.97
-      throwbody[i]:setLinearVelocity(vx[i],vy[i])
+      local vdmpX,vdmpY = throwbody[i].body:getLinearVelocity()
+      throwbody[i].body:setLinearVelocity(0.97*vdmpX,0.97*vdmpY)
+
       -- update the position, seems like each call to this altered the vel?
-      local thx,thy = throwbody[i]:getPosition()
+      local thx,thy = throwbody[i].body:getPosition()
       -- if we are holding it we cannot plot it
-      love.graphics.setColor(0,0,255,255)
+      love.graphics.setColor(throwbody[i].colour.r,throwbody[i].colour.g,throwbody[i].colour.b,255)
       if holding_object ~=i then
-	 love.graphics.circle( "fill", thx, thy, 2, 10 )
+	 love.graphics.circle( "fill", thx, thy, 4, 10 )
       end
    end
 
