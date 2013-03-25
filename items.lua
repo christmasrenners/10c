@@ -21,9 +21,6 @@ function SpawnItem()
 	-- generate item at random from DB
 	local newItem = deepcopy(itemDB[math.random(#itemDB)])
 
-	newItem.vx = {}
-	newItem.vy = {}
-
 	newItem.body = 	love.physics.newBody( world , math.random(worldSize.x) , math.random(worldSize.y) , "dynamic" )
 	newItem.shape = love.physics.newCircleShape( 5 ) -- shape should be taken from DB
 	newItem.fixture = love.physics.newFixture(newItem.body, newItem.shape)
