@@ -42,10 +42,10 @@ function love.update()
    -- If the REPL is open, you probably don't want to update your game
    if repl.toggled() then return end
 
-   local dt = 100*love.timer.getDelta()
+   local dt = love.timer.getDelta()
 
    -- Update physics
-   world:update( dt )
+   world:update( 100*dt )
 
    local moveVal = {x=0,y=0}
    --- periodic boundary conditions
@@ -54,11 +54,13 @@ function love.update()
    if love.keyboard.isDown("s") then moveVal.y = moveVal.y+dt end
    if love.keyboard.isDown("d") then moveVal.x = moveVal.x+dt end
 
-   local tx,ty = moveObject(characterLoc,moveVal)
+   characterBody:applyForce( moveVal.x , moveVal.y )
+   local tx,ty = characterBody:getPosition()
+   --local tx,ty = moveObject(characterLoc,moveVal)
    characterLoc = {x=tx, y=ty}
 
-   characterBody:setX(characterLoc.x)
-   characterBody:setY(characterLoc.y)
+   --characterBody:setX(characterLoc.x)
+   --characterBody:setY(characterLoc.y)
 
 end
 
@@ -81,14 +83,29 @@ function love.draw()
       local vdmpX,vdmpY = throwbody[i].body:getLinearVelocity()
       throwbody[i].body:setLinearVelocity(0.97*vdmpX,0.97*vdmpY)
 
-      -- update the position, seems like each call to this altered the vel?
+      -- update the position
       local thx,thy = throwbody[i].body:getPosition()
-      -- if we are holding it we cannot plot it
+
+      -- wrap into our boundary conditions
+      local dt = love.timer.getDelta()
+      if bc == periodic then 
+	 if (vdmpX*vdmpX + vdmpY*vdmpY) > 1E-3 then
+	 thx = bc( thx + vdmpX*dt , worldSize.x )
+	 thy = bc( thy + vdmpY*dt , worldSize.y )
+	 throwbody[i].body:setPosition( thx , thy )
+	 end
+      end
+
+      -- if we are holding it we will not plot it
       love.graphics.setColor(throwbody[i].colour.r,throwbody[i].colour.g,throwbody[i].colour.b,255)
       if holding_object ~=i then
 	 love.graphics.circle( "fill", thx, thy, 4, 10 )
       end
    end
+
+   -- always try and bring the body to rest
+   local chvx,chvy = characterBody:getLinearVelocity()
+   characterBody:applyForce( -chvx*0.015 , -chvy*0.015 )
 
    -- set up the targeting
    draw_player()

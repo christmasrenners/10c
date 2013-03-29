@@ -36,7 +36,7 @@ function close_to_object()
       local thx,thy = throwbody[i].body:getPosition()
       local xdiff = characterLoc.x - thx
       local ydiff = characterLoc.y - thy
-      distfromobj = math.sqrt( xdiff * xdiff + ydiff*ydiff )
+      distfromobj = math.sqrt( xdiff*xdiff + ydiff*ydiff )
       -- if we are close to an object return its index
       if distfromobj < 20 then min_idx = i end
    end
@@ -48,9 +48,7 @@ function pick_up()
    -- have a distance to object fucking thing
    local close_idx = close_to_object()
    if close_idx ~= false and holding_object == false then
-      --print("picked up this motherfucker ... ")
-
-      -- can be picked up
+       -- can be picked up
       if throwbody[close_idx].pickup == true then
          holding_object = close_idx
       end
