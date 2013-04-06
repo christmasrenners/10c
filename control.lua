@@ -43,9 +43,9 @@ function love.mousepressed(x, y, button)
       return
    end
    -- hit and throw
-   if button=='l' then 
+   if button=='l' and love.keyboard.isDown("lctrl") == false then 
       return hit()
-   elseif button =='r' then 
+   elseif button =='r' or (button == 'l' and love.keyboard.isDown("lctrl") == true) then 
       if holding_object ~= false then return throw() end
       return pick_up()
    end
@@ -93,6 +93,18 @@ function SetIndoorMode()
    tileInfo = indoorTile
 
    throwbody = throwbodyIndoors
+
+   -- moving objects
+   if holding_object ~= false then
+      local newobject = deepcopy(throwbodyOutdoors[holding_object])
+      newobject.body = love.physics.newBody( indoorWorld , 0 , 0 , "dynamic" )
+      newobject.fixture = love.physics.newFixture(newobject.body, newobject.shape)
+
+      table.remove(throwbodyOutdoors,holding_object)
+
+      throwbodyIndoors[#throwbodyIndoors+1] = newobject
+      holding_object = #throwbodyIndoors
+   end
 end
 
 
@@ -108,4 +120,15 @@ function SetOutdoorMode()
    tileInfo = outdoorTile
 
    throwbody = throwbodyOutdoors
+
+   -- moving objects
+   if holding_object ~= false then
+      local newobject = deepcopy(throwbodyIndoors[holding_object])
+      newobject.body = love.physics.newBody( outdoorWorld , 0 , 0 , "dynamic" )
+
+      table.remove(throwbodyIndoors,holding_object)
+
+      throwbodyOutdoors[#throwbodyOutdoors+1] = newobject
+      holding_object = #throwbodyOutdoors
+   end
 end

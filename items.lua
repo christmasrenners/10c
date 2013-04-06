@@ -30,6 +30,7 @@ function SpawnItem( worldDefinition )
 
    newItem.body = love.physics.newBody( worldDefinition , math.random(worldSize.x) , math.random(worldSize.y) , "dynamic" )
    newItem.shape = love.physics.newCircleShape( 5 ) -- shape should be taken from DB
+
    newItem.body:setMass(itemDB[itemidx].mass)
    newItem.fixture = love.physics.newFixture(newItem.body, newItem.shape)
    newItem.width = itemDB[itemidx].width

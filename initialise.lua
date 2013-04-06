@@ -117,7 +117,7 @@ end
 -- add the box2d body and shape to a house tile
 function AddHouseBody(x,y)
 
-      outdoorTile[x][y].body  = love.physics.newBody(world, x*tileSize + tileSize/2, y*tileSize + tileSize/2) 
+      outdoorTile[x][y].body  = love.physics.newBody(outdoorWorld, x*tileSize + tileSize/2, y*tileSize + tileSize/2) 
       outdoorTile[x][y].shape = love.physics.newRectangleShape( tileSize, tileSize )
       outdoorTile[x][y].fixture = love.physics.newFixture( outdoorTile[x][y].body, outdoorTile[x][y].shape )
 
@@ -263,8 +263,6 @@ function Initialise()
    InitWorldTiles()
    InitIndoorTiles()
 
-   SetOutdoorMode()
-
    GenWorld()
    GenRoom()
 
@@ -272,4 +270,7 @@ function Initialise()
    InitHouses()
    InitObjects()
    InitCharacter()
+
+      SetOutdoorMode()
+
 end

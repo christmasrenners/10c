@@ -37,7 +37,7 @@ function close_to_object()
    -- at the moment use the throwbody
    local min_idx = false
    -- loop objects
-   for i=1,nobjects,1 do
+   for i=1,#throwbody,1 do
       local thx,thy = throwbody[i].body:getPosition()
       local xdiff = characterLoc.x - thx
       local ydiff = characterLoc.y - thy

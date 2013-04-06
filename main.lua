@@ -82,7 +82,7 @@ function love.draw()
    end
 
    -- draw all of the objects
-   for i=1,nobjects,1 do
+   for i=1,#throwbody,1 do
    -- linearly damp the thrown velocities
       local vdmpX,vdmpY = throwbody[i].body:getLinearVelocity()
       throwbody[i].body:setLinearVelocity(0.97*vdmpX,0.97*vdmpY)
