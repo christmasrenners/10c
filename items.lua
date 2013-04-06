@@ -15,8 +15,8 @@ local redBall = {}
 redBall.colour = {r=255,g=0,b=0}
 redBall.pickup = false
 redBall.mass = 0.1
-redBall.width = 5
-redBall.height = 5
+redBall.width = 6
+redBall.height = 6
 
 -- initialise prototype object list
 itemDB = {yellowBall,redBall}
