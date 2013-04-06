@@ -3,8 +3,11 @@ require("items")
 function InitCharacter()
   
    -- Character quads
-   --characterImage = love.graphics.newImage("character.png")
-   characterQuad  = love.graphics.newQuad(0,0,32,48,32,48)
+   characterImage = love.graphics.newImage("character.png")
+   -- size of the image
+   ch_Width = 20
+   ch_Height = 20
+   characterQuad = love.graphics.newQuad(0,0,ch_Width,ch_Height,ch_Width,ch_Height)
 
   -- Indoor character
    indoorLoc = {x=screenSize.x/2,y=screenSize.y/2}
@@ -39,12 +42,12 @@ function InitObjects()
    -- initialise the object names
    throwbodyOutdoors = {}
    for i=1,nobjects,1 do
-      throwbodyOutdoors[i] = SpawnItem()
+      throwbodyOutdoors[i] = SpawnItem( outdoorWorld )
    end
 
    throwbodyIndoors = {}
    for i=1,nobjects,1 do
-      throwbodyIndoors[i] = SpawnItem()
+      throwbodyIndoors[i] = SpawnItem( indoorWorld )
    end
    
    if bc == bounded then

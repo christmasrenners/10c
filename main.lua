@@ -38,11 +38,15 @@ function love.load()
 
 end
 
+
 function love.update()
    -- If the REPL is open, you probably don't want to update your game
    if repl.toggled() then return end
 
    local dt = love.timer.getDelta()
+
+   -- sleep for a bit
+   --love.timer.sleep(0.01) 
 
    -- Update physics
    world:update( 100*dt )
