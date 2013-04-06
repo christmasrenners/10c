@@ -25,7 +25,7 @@ function SpawnItem()
    local newItem = deepcopy(itemDB[itemidx])
 
    newItem.body = love.physics.newBody( world , math.random(worldSize.x) , math.random(worldSize.y) , "dynamic" )
-   newItem.shape = love.physics.newCircleShape( 5 ) -- shape should be taken from DB
+   newItem.shape = love.physics.newCircleShape( 10 ) -- shape should be taken from DB
    newItem.body:setMass(itemDB[itemidx].mass)
    newItem.fixture = love.physics.newFixture(newItem.body, newItem.shape)
 

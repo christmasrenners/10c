@@ -92,6 +92,15 @@ function SetIndoorMode()
    tileInfo = indoorTile
 
    throwbody = throwbodyIndoors
+
+   -- moving objects
+   if holding_object ~= false then
+      local newobject = deepcopy(throwbody[holding_object])
+      newobject.body = love.physics.newBody( indoorWorld , 0 , 0 , "dynamic" )
+      throwbody[holding_object].body:setPosition(chx+throwX,chy+throwY)
+      throwbody[holding_object].body:setLinearVelocity(throwX,throwY)
+      holding_object = false
+   end
 end
 
 
