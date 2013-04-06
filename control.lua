@@ -44,8 +44,9 @@ function love.mousepressed(x, y, button)
    end
    -- hit and throw
    if button=='l' then 
-      return throw() 
+      return hit()
    elseif button =='r' then 
+      if holding_object ~= false then return throw() end
       return pick_up()
    end
 end

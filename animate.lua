@@ -24,6 +24,11 @@ end
 
 -- hit mechanic, will have to think about it
 function hit()
+   if holding_object ~= false and hitClicked == false then
+      local chx,chy = characterLoc.x,characterLoc.y
+      throwbody[holding_object].body:setPosition(chx+ch_Width,chy+ch_Width+1)
+      hitClicked = true
+   end
    return
 end
 
@@ -73,23 +78,31 @@ end
 -- wrappers for the character drawing and animation of npcs
 -- get the mouse position and draw a line to it
 function draw_player()
-   -- draw the person
-   love.graphics.setColor(255,0,0,255)
-   love.graphics.circle( "fill", characterLoc.x, characterLoc.y, 5, 10 )
-
-   love.graphics.setColor(255,255,255,255)
-   --love.graphics.print(characterLoc.x.."  "..characterLoc.y,100,100)
-
-   --love.graphics.drawq(characterImage,characterQuad,characterLoc.x-16,characterLoc.y-32)
 
    -- draw a crosshair on the mouse pointer of +/- 2 on the mouse pointer
    local x,y = love.mouse.getPosition()
    local chx,chy = characterLoc.x,characterLoc.y
 
+   -- draw the person
+   --love.graphics.setColor(255,0,0,255)
+   --love.graphics.circle( "fill", characterLoc.x, characterLoc.y, 5, 10 )
+
+   local locAngle = math.atan2( y - chy , x - chx )
+   --local locAngle = math.atan( ( y - chy ) / ( x - chx ) )
+
+  -- love.graphics.rectangle( "fill" , chx - width/2 , chy - height/2, width , height )
+
+   love.graphics.setColor(255,255,255,255)
+
+   --love.graphics.print(characterLoc.x.."  "..characterLoc.y,100,100)
+
+   love.graphics.drawq(characterImage,characterQuad,characterLoc.x,characterLoc.y,locAngle,1,1,ch_Width/2,ch_Height/2)
+
    love.graphics.setColor(255,255,255,255)
 
    love.graphics.line(x-4,y,x+4,y)
    love.graphics.line(x,y-4,x,y+4)
+
 end
 
 --draw npcs
