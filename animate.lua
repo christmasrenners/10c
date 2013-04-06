@@ -15,7 +15,7 @@ function throw()
       local chx,chy = characterLoc.x,characterLoc.y
       local throwX,throwY = set_velocity(chx,chy)
 
-      throwbody[holding_object].body:setPosition(chx+throwX,chy+throwY)
+      --throwbody[holding_object].body:setPosition(chx,chy)
       throwbody[holding_object].body:setLinearVelocity(throwX,throwY)
       holding_object = false
    end

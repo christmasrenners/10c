@@ -103,7 +103,14 @@ function love.draw()
       -- if we are holding it we will not plot it
       love.graphics.setColor(throwbody[i].colour.r,throwbody[i].colour.g,throwbody[i].colour.b,255)
       if holding_object ~=i then
-	 love.graphics.circle( "fill", thx, thy, 4, 10 )
+	 love.graphics.circle( "fill", thx, thy, throwbody[i].width/2 , 10 )
+      else
+	 local chx,chy = characterLoc.x,characterLoc.y
+	 local px,py = set_velocity(chx,chy)
+	 px = px * ( ch_Width + throwbody[i].width ) / 8 
+	 py = py * ( ch_Height + throwbody[i].height ) / 8 
+	 throwbody[i].body:setPosition( characterLoc.x + px , characterLoc.y + py )
+	 love.graphics.circle( "fill", characterLoc.x + px , characterLoc.y + py , throwbody[i].width/2 , 10 )
       end
    end
 
