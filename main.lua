@@ -110,13 +110,14 @@ function love.draw()
 	 if hitClicked == true then
 	    local ox,oy = throwbody[i].body:getPosition()
 
-	    local diffx = ox - characterLoc.x
-	    local diffy = oy - characterLoc.y
-	    if diffx < 0 or diffy < 0 then
+	    local dx = ox - characterLoc.x
+	    local dy = oy - characterLoc.y
+	    distance = math.sqrt( dx*dx + dy*dy )
+	    if distance < ch_distance*0.5 then
 	       throwbody[i].body:setLinearVelocity( 0.0 , 0.0 )
 	       hitClicked = false
 	    end
-	    throwbody[i].body:applyForce( -diffx*0.001 , -diffy*0.001 )
+	    throwbody[i].body:applyForce( -dx*0.001 , -dy*0.001 )
 	    love.graphics.circle( "fill", ox , oy , throwbody[i].width/2 , 10 )
 	 else
 	    local chx,chy = characterLoc.x,characterLoc.y

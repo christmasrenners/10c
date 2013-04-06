@@ -7,6 +7,7 @@ function InitCharacter()
    -- size of the image
    ch_Width = 20
    ch_Height = 20
+   ch_distance = math.sqrt( ch_Width*ch_Width + ch_Height*ch_Height)
    characterQuad = love.graphics.newQuad(0,0,ch_Width,ch_Height,ch_Width,ch_Height)
 
   -- Indoor character

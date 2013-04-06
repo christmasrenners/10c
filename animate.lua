@@ -25,7 +25,7 @@ function hit()
    if holding_object ~= false then
       local chx,chy = throwbody[holding_object].body:getPosition()
       local vx,vy = set_velocity(chx,chy)
-      throwbody[holding_object].body:applyForce( vx*0.05 , vy*0.05 )
+      throwbody[holding_object].body:applyForce( vx*0.025 , vy*0.025 )
       hitClicked = true
    end
    return
