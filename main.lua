@@ -105,12 +105,28 @@ function love.draw()
       if holding_object ~=i then
 	 love.graphics.circle( "fill", thx, thy, throwbody[i].width/2 , 10 )
       else
-	 local chx,chy = characterLoc.x,characterLoc.y
-	 local px,py = set_velocity(chx,chy)
-	 px = px * ( ch_Width + throwbody[i].width ) / 8 
-	 py = py * ( ch_Height + throwbody[i].height ) / 8 
-	 throwbody[i].body:setPosition( characterLoc.x + px , characterLoc.y + py )
-	 love.graphics.circle( "fill", characterLoc.x + px , characterLoc.y + py , throwbody[i].width/2 , 10 )
+
+	 -- hit mechanic
+	 if hitClicked == true then
+	    local ox,oy = throwbody[i].body:getPosition()
+
+	    local diffx = ox - characterLoc.x
+	    local diffy = oy - characterLoc.y
+	    if diffx < 0 or diffy < 0 then
+	       throwbody[i].body:setLinearVelocity( 0.0 , 0.0 )
+	       hitClicked = false
+	    end
+	    throwbody[i].body:applyForce( -diffx*0.001 , -diffy*0.001 )
+	    love.graphics.circle( "fill", ox , oy , throwbody[i].width/2 , 10 )
+	 else
+	    local chx,chy = characterLoc.x,characterLoc.y
+	    local px,py = set_velocity(chx,chy)
+	    px = px * ( ch_Width + throwbody[i].width ) / 8 
+	    py = py * ( ch_Height + throwbody[i].height ) / 8 
+	    throwbody[i].body:setPosition( characterLoc.x + px , characterLoc.y + py )
+	    love.graphics.circle( "fill", characterLoc.x + px , characterLoc.y + py , throwbody[i].width/2 , 10 )
+	 end
+
       end
    end
 

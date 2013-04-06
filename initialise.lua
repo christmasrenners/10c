@@ -258,6 +258,9 @@ function Initialise()
    indoorWorld = love.physics.newWorld( 0, 0 )
    outdoorWorld = love.physics.newWorld( 0, 0 )
 
+   -- initialise the hit counter
+   hitClicked = 0
+
    font = love.graphics.newFont(50) -- the number denotes the font size
 
    InitWorldTiles()

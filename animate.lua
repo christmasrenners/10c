@@ -14,8 +14,6 @@ function throw()
    if holding_object ~= false then
       local chx,chy = characterLoc.x,characterLoc.y
       local throwX,throwY = set_velocity(chx,chy)
-
-      --throwbody[holding_object].body:setPosition(chx,chy)
       throwbody[holding_object].body:setLinearVelocity(throwX,throwY)
       holding_object = false
    end
@@ -24,9 +22,10 @@ end
 
 -- hit mechanic, will have to think about it
 function hit()
-   if holding_object ~= false and hitClicked == false then
-      local chx,chy = characterLoc.x,characterLoc.y
-      throwbody[holding_object].body:setPosition(chx+ch_Width,chy+ch_Width+1)
+   if holding_object ~= false then
+      local chx,chy = throwbody[holding_object].body:getPosition()
+      local vx,vy = set_velocity(chx,chy)
+      throwbody[holding_object].body:applyForce( vx*0.05 , vy*0.05 )
       hitClicked = true
    end
    return
