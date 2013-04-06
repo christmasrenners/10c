@@ -128,7 +128,7 @@ function SetOutdoorMode()
 
       table.remove(throwbodyIndoors,holding_object)
 
-      throwbodyIndoors[#throwbodyOutdoors+1] = newobject
+      throwbodyOutdoors[#throwbodyOutdoors+1] = newobject
       holding_object = #throwbodyOutdoors
    end
 end
