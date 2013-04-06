@@ -16,9 +16,27 @@ function love.keypressed(key, unicode)
    end
    -- covet mechanic
    if key == ' ' then covet_bool=1 else covet_bool=0 end
+   -- enter house
+   if key == 'return' then checkEnter() end
+
 end
 
---- not used atm
+-- return the tile coordinates that the player is currently standing on
+function GetPlayerTile()
+   return math.floor( characterLoc.x/tileSize ), math.floor( characterLoc.y/tileSize )
+end
+
+-- check to see if entering a doorway is possible
+function checkEnter()
+
+   local x,y = GetPlayerTile()
+   if (tileInfo[x][y].name == "door") then
+      if gamemode == "indoors" then SetOutdoorMode() return
+      elseif gamemode == "outdoors" then GenRoom() SetIndoorMode() end
+   end
+
+end
+
 function love.mousepressed(x, y, button)
    if repl.toggled() then
       repl.mousepressed(x, y, button)
@@ -59,4 +77,34 @@ function bounded( new , compare )
    if new < 0 then return 0 end
    if new > compare then return compare end
    return new 
+end
+
+-- set gamemode to indoors
+function SetIndoorMode()
+   gamemode = "indoors"
+
+   characterLoc = indoorLoc
+   characterBody = indoorBody
+   characterShape = indoorShape
+   characterFixture = indoorFixture
+
+   world = indoorWorld
+   tileInfo = indoorTile
+
+   throwbody = throwbodyIndoors
+end
+
+
+function SetOutdoorMode()
+   gamemode = "outdoors"
+
+   characterLoc = outdoorLoc
+   characterBody = outdoorBody
+   characterShape = outdoorShape
+   characterFixture = outdoorFixture
+
+   world = outdoorWorld
+   tileInfo = outdoorTile
+
+   throwbody = throwbodyOutdoors
 end

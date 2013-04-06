@@ -1,18 +1,29 @@
 require("items")
 
 function InitCharacter()
-   screenSize = {x=800,y=600}
-   screenLoc = {x=0,y=0}
-   characterLoc = {x=screenSize.x/2,y=screenSize.y/2}
-   mouseLoc = {x=0,y=0}
-
+  
+   -- Character quads
    --characterImage = love.graphics.newImage("character.png")
    characterQuad  = love.graphics.newQuad(0,0,32,48,32,48)
 
-   characterBody = love.physics.newBody(world,characterLoc.x,characterLoc.y,'dynamic')
-   characterShape = love.physics.newCircleShape( 5 )
-   characterBody:setMass(10)
-   characterFixture = love.physics.newFixture( characterBody, characterShape )
+  -- Indoor character
+   indoorLoc = {x=screenSize.x/2,y=screenSize.y/2}
+
+   indoorBody = love.physics.newBody(indoorWorld,indoorLoc.x,indoorLoc.y,'dynamic')
+   indoorShape = love.physics.newCircleShape( 5 )
+   indoorBody:setMass(10)
+   indoorFixture = love.physics.newFixture( indoorBody, indoorShape )
+
+   -- Outdoor character
+   outdoorLoc = {x=screenSize.x/2,y=screenSize.y/2}
+
+   outdoorBody = love.physics.newBody(outdoorWorld,outdoorLoc.x,outdoorLoc.y,'dynamic')
+   outdoorShape = love.physics.newCircleShape( 5 )
+   outdoorBody:setMass(10)
+   outdoorFixture = love.physics.newFixture( outdoorBody, outdoorShape )
+
+   SetOutdoorMode()
+
 end
 
 function InitObjects()
@@ -26,14 +37,19 @@ function InitObjects()
    holding_object=false
 
    -- initialise the object names
-   throwbody = {}
+   throwbodyOutdoors = {}
    for i=1,nobjects,1 do
-      throwbody[i] = SpawnItem()
+      throwbodyOutdoors[i] = SpawnItem()
+   end
+
+   throwbodyIndoors = {}
+   for i=1,nobjects,1 do
+      throwbodyIndoors[i] = SpawnItem()
    end
    
    if bc == bounded then
       edge = {}
-      edge.body = love.physics.newBody(world,0,0,'static')
+      edge.body = love.physics.newBody(outdoorWorld,0,0,'static')
       edge.shapes = {}
       edge.shapes[1] = love.physics.newEdgeShape(0,0,0,worldSize.y)
       edge.shapes[2] = love.physics.newEdgeShape(0,0,worldSize.x,0)
@@ -43,6 +59,19 @@ function InitObjects()
       for i,s in ipairs(edge.shapes) do
 	 love.physics.newFixture(edge.body,s)
       end
+   end
+
+   -- init indoors boundaries
+   edge = {}
+   edge.body = love.physics.newBody(indoorWorld,0,0,'static')
+   edge.shapes = {}
+   edge.shapes[1] = love.physics.newEdgeShape(2*tileSize,2*tileSize,2*tileSize,worldSize.y - 2*tileSize)
+   edge.shapes[2] = love.physics.newEdgeShape(2*tileSize,2*tileSize,worldSize.x - 2*tileSize,2*tileSize)
+   edge.shapes[3] = love.physics.newEdgeShape(worldSize.x - 2*tileSize,worldSize.y - 2*tileSize,worldSize.x - 2*tileSize,2*tileSize)
+   edge.shapes[4] = love.physics.newEdgeShape(2*tileSize,worldSize.y - 2*tileSize,worldSize.x - 2*tileSize,worldSize.y - 2*tileSize)
+
+   for i,s in ipairs(edge.shapes) do
+ love.physics.newFixture(edge.body,s)
    end
 end
 
@@ -54,105 +83,57 @@ local function onroad(roads,newroad)
    return false
 end
 
--- find a suitable house position
-function suitable_house( )
-   -- pick a place along a road for the house
-   local xory = math.random(2)
-   local sub = 2*math.random(2)-3
-   if xory == 1 then
-      local x = (roadx[math.random(#roadx)]+sub)%tileNumber.x
-      local y = (math.random(tileNumber.y+1)-sub)%tileNumber.y
-      while onroad( roady , y ) == true do
-	 y = (math.random(tileNumber.y+1)-sub)%tileNumber.y
-      end
-      return x,y
-   else
-      local x = (math.random(tileNumber.x+1)-sub)%tileNumber.x
-      local y = (roady[math.random(#roady)]+sub)%tileNumber.y
-      while onroad( roadx , x ) == true do
-	 x = (math.random(tileNumber.x+1)-sub)%tileNumber.x
-      end
-      return x,y
-   end
-end
 
 -- obvs initialise the houses
 function InitHouses()
-   -- initialise the houses
-   local nHouses = 30
-   for i=1,nHouses,1 do
 
-      local testX,testY = suitable_house()
-
-      tileInfo[testX][testY] = deepcopy(terrainValues.house)
-
-      -- box2d
-      tileInfo[testX][testY].body  = love.physics.newBody(world, testX*tileSize + tileSize/2, testY*tileSize + tileSize/2) 
-      tileInfo[testX][testY].shape = love.physics.newRectangleShape( tileSize, tileSize )
-      tileInfo[testX][testY].fixture = love.physics.newFixture( tileInfo[testX][testY].body, tileInfo[testX][testY].shape )
-
-   end
+   PlaceHouse(30,4)
+   PlaceHouse(20,4)
 end
 
--- why would we have two roads next to one another?
-local function neigbor_roads(roads,newroad)
-   for i,v in ipairs(roads) do
-      if newroad == roads[i] then return true end
-      if newroad == roads[i]+1 then return true end
-      if newroad == roads[i]-1 then return true end
-   end
-   return false
+function PlaceHouse(doorX, doorY)
+
+   outdoorTile[doorX][doorY] = deepcopy(outdoorTileDB.door)
+
+   outdoorTile[doorX-1][doorY] = deepcopy(outdoorTileDB.house)
+   outdoorTile[doorX+1][doorY] = deepcopy(outdoorTileDB.house)
+
+   outdoorTile[doorX-1][doorY-1] = deepcopy(outdoorTileDB.house)
+   outdoorTile[doorX+1][doorY-1] = deepcopy(outdoorTileDB.house)
+   outdoorTile[doorX][doorY-1] = deepcopy(outdoorTileDB.house)
+
+   -- Probably should make this a polygon at some point
+   AddHouseBody(doorX-1,doorY)
+   AddHouseBody(doorX+1,doorY)
+   AddHouseBody(doorX-1,doorY-1)
+   AddHouseBody(doorX,doorY-1)
+   AddHouseBody(doorX+1,doorY-1)
+
+end
+
+-- add the box2d body and shape to a house tile
+function AddHouseBody(x,y)
+
+      outdoorTile[x][y].body  = love.physics.newBody(world, x*tileSize + tileSize/2, y*tileSize + tileSize/2) 
+      outdoorTile[x][y].shape = love.physics.newRectangleShape( tileSize, tileSize )
+      outdoorTile[x][y].fixture = love.physics.newFixture( outdoorTile[x][y].body, outdoorTile[x][y].shape )
+
 end
 
 -- obvs initialise the roads
 function InitRoads()
-   roadx = {}
-   roady = {}
-   local nRoads = 6
-   for i=1,nRoads,1 do
-      local roadPosX = math.random(tileNumber.x + 1) -1
 
-      -- add road positions to array roadx
-      if i == 1 then roadx[1] = math.random(tileNumber.x + 1) -1 
-      else
-	 local check = 0
-	 while neigbor_roads(roadx,roadPosX) == true or check > 100 do
-	    roadPosX = math.random(tileNumber.x + 1) -1
-	    check = check + 1 
-	 end
-	 roadx[i] = roadPosX
-      end
-      --draw roads
-      for j=0,tileNumber.y,1 do
-	 tileInfo[roadPosX][j] = deepcopy(terrainValues.road)
-      end
-   end
-   -- and some in the y direction
-   for i=1,nRoads,1 do
-      local roadPosY = math.random(tileNumber.y + 1) -1
-
-      -- add road positions to array roady
-      if i == 1 then roady[1] = roadPosY else
-	 local check = 0
-	 while neigbor_roads(roady,roadPosY) == true or check > 100 do
-	    roadPosY = math.random(tileNumber.y + 1) -1
-	    check = check + 1 
-	 end
-	 roady[i] = roadPosY
-      end
-      -- and draw again
-      for j=0,tileNumber.x,1 do
-	 tileInfo[j][roadPosY] = deepcopy(terrainValues.road)
-      end
+  -- main road
+   for j=10,tileNumber.x,1 do
+	 outdoorTile[j][5] = deepcopy(outdoorTileDB.road)
    end
 end
 
+-- initialse world tile information
 function InitWorldTiles()
 
    worldSize = {x=800,y=600}
    tileSize = 20
-
-   font = love.graphics.newFont(50) -- the number denotes the font size
 
    -- set the boundary conditions , choices are bounded or periodic
    bc = bounded
@@ -160,41 +141,105 @@ function InitWorldTiles()
 
    tileNumber = {x=worldSize.x/tileSize, y=worldSize.y/tileSize}
 
-   local terrainMap = {"land","scrub"}
-   terrainValues = {}
-   terrainValues.land = {}
-   terrainValues.land.name = "land"
-   terrainValues["land"].colour = {r=155,g=155,b=0,a=255}
-   terrainValues.land.collision = false
+   outdoorTileDB = {}
+   outdoorTileDB.land = {}
+   outdoorTileDB.land.name = "land"
+   outdoorTileDB["land"].colour = {r=155,g=155,b=0,a=255}
+   outdoorTileDB.land.collision = false
 
-   terrainValues.scrub = {}
-   terrainValues.scrub.name = "scrub"
-   terrainValues["scrub"].colour = {r=55,g=55,b=0,a=255}
-   terrainValues.scrub.collision = false
+   outdoorTileDB.scrub = {}
+   outdoorTileDB.scrub.name = "scrub"
+   outdoorTileDB["scrub"].colour = {r=55,g=55,b=0,a=255}
+   outdoorTileDB.scrub.collision = false
 
    -- house type
-   terrainValues.house = {}
-   terrainValues.house.name = "house"
-   terrainValues["house"].colour = {r=0,g=255,b=0,a=255}
-   terrainValues.house.collision = true
+   outdoorTileDB.house = {}
+   outdoorTileDB.house.name = "house"
+   outdoorTileDB["house"].colour = {r=0,g=255,b=0,a=255}
+   outdoorTileDB.house.collision = true
 
-   terrainValues.road = {}
-   terrainValues.road.name = "road"
-   terrainValues["road"].colour = {r=155,g=155,b=155,a=255}
-   terrainValues.road.collision = false
+   outdoorTileDB.door = {}
+   outdoorTileDB.door.name = "door"
+   outdoorTileDB["door"].colour = {r=0,g=0,b=0,a=255}
+   outdoorTileDB.door.collision = false
 
-   tileInfo = {}
-   for i=0,tileNumber.x,1 do 
-      tileInfo[i] = {}
-      for j=0,tileNumber.y,1 do
-	 tileInfo[i][j] = deepcopy(terrainValues[terrainMap[math.random(#terrainMap)]])
-      end
-   end
+   outdoorTileDB.road = {}
+   outdoorTileDB.road.name = "road"
+   outdoorTileDB["road"].colour = {r=155,g=155,b=155,a=255}
+   outdoorTileDB.road.collision = false
 
 end
 
 -- indoor generation
-function InitIndoors()
+function InitIndoorTiles()
+
+   -- should allow indoors to have different worldsize later
+   --worldSize = {x=800,y=600}
+   --tileSize = 20
+
+   indoorTileDB = {}
+   indoorTileDB.woodenfloor = {}
+   indoorTileDB.woodenfloor.name = "woodenfloor"
+   indoorTileDB["woodenfloor"].colour = {r=139,g=69,b=19,a=255}
+   indoorTileDB.woodenfloor.collision = false
+
+   indoorTileDB.outerwall = {}
+   indoorTileDB.outerwall.name = "outerwall"
+   indoorTileDB["outerwall"].colour = {r=0,g=0,b=0,a=255}
+   indoorTileDB.outerwall.collision = true
+
+   indoorTileDB.door = {}
+   indoorTileDB.door.name = "door"
+   indoorTileDB["door"].colour = {r=155,g=0,b=0,a=255}
+   indoorTileDB.door.collision = false
+end
+
+-- randomly generate new world
+function GenWorld()
+
+   local  terrainMap = {"land","scrub"}
+
+   outdoorTile = {}
+   for i=0,tileNumber.x,1 do 
+      outdoorTile[i] = {}
+      for j=0,tileNumber.y,1 do
+    outdoorTile[i][j] = deepcopy(outdoorTileDB[terrainMap[math.random(#terrainMap)]])
+      end
+   end
+end
+
+-- randomly generate new room
+function GenRoom()
+
+   local indoorMap = {"woodenfloor"}
+
+   indoorTile = {}
+   for i=0,tileNumber.x,1 do  -- should allow different sizes!
+      indoorTile[i] = {}
+      for j=0,tileNumber.y,1 do
+    indoorTile[i][j] = deepcopy(indoorTileDB[indoorMap[math.random(#indoorMap)]])
+      end
+   end
+
+   for i=0,tileNumber.x,1 do  -- should allow different sizes!
+      indoorTile[i][0] = deepcopy(indoorTileDB.outerwall)
+      indoorTile[i][1] = deepcopy(indoorTileDB.outerwall)
+
+      indoorTile[i][tileNumber.y-2] = deepcopy(indoorTileDB.outerwall)
+      indoorTile[i][tileNumber.y-1] = deepcopy(indoorTileDB.outerwall)
+   end
+
+      for i=0,tileNumber.y,1 do  -- should allow different sizes!
+      indoorTile[0][i] = deepcopy(indoorTileDB.outerwall)
+      indoorTile[1][i] = deepcopy(indoorTileDB.outerwall)
+
+      indoorTile[tileNumber.x-2][i] = deepcopy(indoorTileDB.outerwall)
+      indoorTile[tileNumber.x-1][i] = deepcopy(indoorTileDB.outerwall)
+   end
+
+   indoorTile[20][27] = deepcopy(indoorTileDB.door)
+   indoorTile[19][27] = deepcopy(indoorTileDB.door)
+   indoorTile[21][27] = deepcopy(indoorTileDB.door)
 
 end
 
@@ -202,10 +247,24 @@ end
 -- initialisation wrapper
 function Initialise()
 
-   -- init physics world
-   world = love.physics.newWorld( 0, 0 )
+   screenSize = {x=800,y=600}
+   screenLoc = {x=0,y=0}
+   mouseLoc = {x=0,y=0}
+
+   -- init physics worlds
+   indoorWorld = love.physics.newWorld( 0, 0 )
+   outdoorWorld = love.physics.newWorld( 0, 0 )
+
+   font = love.graphics.newFont(50) -- the number denotes the font size
 
    InitWorldTiles()
+   InitIndoorTiles()
+
+   SetOutdoorMode()
+
+   GenWorld()
+   GenRoom()
+
    InitRoads()
    InitHouses()
    InitObjects()
